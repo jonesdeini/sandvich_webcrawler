@@ -1,9 +1,10 @@
 package main
 
 import (
- "net/http"
- "io/ioutil"
  "fmt"
+ "io/ioutil"
+ "net/http"
+ "strings"
 )
 
 func main() {
@@ -13,5 +14,7 @@ func main() {
   }
   defer resp.Body.Close()
   body, err := ioutil.ReadAll(resp.Body)
-  fmt.Println(string(body))
+  if strings.Contains(string(body), "http://xxlgamers.gameme.com/overview/") {
+     fmt.Println("word")
+   }
 }
