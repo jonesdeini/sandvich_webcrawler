@@ -13,6 +13,5 @@ func main() {
   }
   defer resp.Body.Close()
   body, err := ioutil.ReadAll(resp.Body)
-  // lol wut
-  fmt.Println(body)
+  fmt.Println(string(body))
 }
