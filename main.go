@@ -8,6 +8,24 @@ import (
  //"strings"
 )
 
+func uniq(s []string) []string {
+  var seen bool
+  uniqSlice := []string{}
+
+  for i := range s {
+    seen = false
+    for j := range uniqSlice {
+      if s[i] == uniqSlice[j] {
+        seen = true
+      }
+    }
+    if seen == false {
+      uniqSlice = append(uniqSlice, s[i])
+    }
+  }
+  return uniqSlice
+}
+
 func main() {
   resp, err := http.Get("http://xxlgamers.gameme.com/tf")
   if err != nil {
@@ -17,19 +35,7 @@ func main() {
   body, err := ioutil.ReadAll(resp.Body)
   serverUrlRegex, err := regexp.Compile(`http://xxlgamers.gameme.com/overview/\d.`)
   res := serverUrlRegex.FindAllString(string(body), -1)
-  severUrls := []string{}
-  var seen bool
-  for i := range res {
-    seen = false
-    for j := range severUrls {
-      if res[i] == severUrls[j] {
-        seen = true
-      }
-    }
-    if seen == false {
-      severUrls = append(severUrls, res[i])
-    }
-  }
+  severUrls := uniq(res)
   fmt.Printf("%v", severUrls)
   if err != nil {
     fmt.Println(err)
