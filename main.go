@@ -4,17 +4,21 @@ import (
  "fmt"
  "io/ioutil"
  "net/http"
- "strings"
+ "regexp"
+ //"strings"
 )
 
 func main() {
   resp, err := http.Get("http://xxlgamers.gameme.com/tf")
   if err != nil {
-    // handle error
+    fmt.Println(err)
   }
   defer resp.Body.Close()
   body, err := ioutil.ReadAll(resp.Body)
-  if strings.Contains(string(body), "http://xxlgamers.gameme.com/overview/") {
-     fmt.Println("word")
-   }
+  serverUrlRegex, err := regexp.Compile(`http://xxlgamers.gameme.com/overview/\d`)
+  res := serverUrlRegex.FindAllString(string(body), -1)
+  fmt.Printf("%v", res)
+  if err != nil {
+    fmt.Println(err)
+  }
 }
