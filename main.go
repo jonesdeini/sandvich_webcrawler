@@ -15,9 +15,22 @@ func main() {
   }
   defer resp.Body.Close()
   body, err := ioutil.ReadAll(resp.Body)
-  serverUrlRegex, err := regexp.Compile(`http://xxlgamers.gameme.com/overview/\d`)
+  serverUrlRegex, err := regexp.Compile(`http://xxlgamers.gameme.com/overview/\d.`)
   res := serverUrlRegex.FindAllString(string(body), -1)
-  fmt.Printf("%v", res)
+  severUrls := []string{}
+  var seen bool
+  for i := range res {
+    seen = false
+    for j := range severUrls {
+      if res[i] == severUrls[j] {
+        seen = true
+      }
+    }
+    if seen == false {
+      severUrls = append(severUrls, res[i])
+    }
+  }
+  fmt.Printf("%v", severUrls)
   if err != nil {
     fmt.Println(err)
   }
