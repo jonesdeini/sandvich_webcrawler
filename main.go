@@ -21,16 +21,6 @@ func serverUrlFetecher() []string {
   // unique results and save sever urls
   return uniq(res)
 }
-func urlFetcher(url string) string {
-  resp, err := http.Get(url)
-  if err != nil {
-    fmt.Println(err)
-  }
-  defer resp.Body.Close()
-  body, err := ioutil.ReadAll(resp.Body)
-  // if err yada yada???
-  return string(body)
-}
 
 func uniq(s []string) []string {
   var seen bool
@@ -48,6 +38,17 @@ func uniq(s []string) []string {
     }
   }
   return uniqSlice
+}
+
+func urlFetcher(url string) string {
+  resp, err := http.Get(url)
+  if err != nil {
+    fmt.Println(err)
+  }
+  defer resp.Body.Close()
+  body, err := ioutil.ReadAll(resp.Body)
+  // if err yada yada???
+  return string(body)
 }
 
 func main() {
