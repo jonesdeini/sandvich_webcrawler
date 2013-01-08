@@ -5,9 +5,22 @@ import (
  "io/ioutil"
  "net/http"
  "regexp"
- //"strings"
 )
 
+func playerInfoUrlFetcher(serverUrl string) []string {
+  playerInfoUrlsSlice := []string{} // not sure the name should end in Slice
+  return playerInfoUrlsSlice
+}
+
+func serverUrlFetecher() []string {
+  serverUrlRegex, _ := regexp.Compile(`http://xxlgamers.gameme.com/overview/\d.`)
+  clanUrl := "http://xxlgamers.gameme.com/tf"
+
+  // fetch page and parse
+  res := serverUrlRegex.FindAllString(urlFetcher(clanUrl), -1)
+  // unique results and save sever urls
+  return uniq(res)
+}
 func urlFetcher(url string) string {
   resp, err := http.Get(url)
   if err != nil {
@@ -38,17 +51,7 @@ func uniq(s []string) []string {
 }
 
 func main() {
-  serverUrlRegex, _ := regexp.Compile(`http://xxlgamers.gameme.com/overview/\d.`)
-  clanUrls := []string {"http://xxlgamers.gameme.com/tf"}
-  severUrls := []string{}
-
-  // NOTE this ain't gonna work
-  // FIXME use a slice of structs contianing clan specific url and regex
-  for i := range clanUrls {
-    // fetch page and parse
-    res := serverUrlRegex.FindAllString(urlFetcher(clanUrls[i]), -1)
-    // unique results and save sever urls
-    severUrls = append(severUrls, uniq(res)...)
-  }
-  fmt.Printf("%v", severUrls)
+  //severUrls := serverUrlFetecher()
+  playerInfoUrls := playerInfoUrlFetcher("http://xxlgamers.gameme.com/overview/17")
+  fmt.Printf("%v", playerInfoUrls)
 }
