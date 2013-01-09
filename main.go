@@ -8,13 +8,13 @@ import (
 )
 
 func playerInfoUrlFetcher(serverUrl string) []string {
-  playerInfoUrlsRegex, _ := regexp.Compile(`http://xxlgamers.gameme.com/playerinfo/\d.`)
+  playerInfoUrlsRegex, _ := regexp.Compile(`http://xxlgamers.gameme.com/playerinfo/\d+`)
   res := playerInfoUrlsRegex.FindAllString(urlFetcher(serverUrl), -1)
   return uniq(res)
 }
 
 func serverUrlFetecher() []string {
-  serverUrlRegex, _ := regexp.Compile(`http://xxlgamers.gameme.com/overview/\d.`)
+  serverUrlRegex, _ := regexp.Compile(`http://xxlgamers.gameme.com/overview/\d+`)
   clanUrl := "http://xxlgamers.gameme.com/tf"
 
   // fetch page and parse
@@ -65,7 +65,7 @@ func recievePlayerInfoUrl(cs chan string) {
 
 func main() {
   //severUrls := serverUrlFetecher()
-  playerInfoUrls := playerInfoUrlFetcher("http://xxlgamers.gameme.com/overview/9")
+  playerInfoUrls := playerInfoUrlFetcher("http://xxlgamers.gameme.com/overview/18")
   /* playerInfoIdChannel := make(chan string) */
   /* go sendPlayerInfoUrls(playerInfoUrls, playerInfoIdChannel) */
   //steamIdChannel := make(chan string)
