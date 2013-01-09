@@ -8,8 +8,9 @@ import (
 )
 
 func playerInfoUrlFetcher(serverUrl string) []string {
-  playerInfoUrlsSlice := []string{} // not sure the name should end in Slice
-  return playerInfoUrlsSlice
+  playerInfoUrlsRegex, _ := regexp.Compile(`http://xxlgamers.gameme.com/playerinfo/\d.`)
+  res := playerInfoUrlsRegex.FindAllString(urlFetcher(serverUrl), -1)
+  return uniq(res)
 }
 
 func serverUrlFetecher() []string {
@@ -51,8 +52,22 @@ func urlFetcher(url string) string {
   return string(body)
 }
 
+//channels
+func sendPlayerInfoUrls(playerInfoUrls []string, cs chan string) {
+  for i := range playerInfoUrls {
+    cs <- playerInfoUrls[i]
+  }
+}
+
+func recievePlayerInfoUrl(cs chan string) {
+
+}
+
 func main() {
   //severUrls := serverUrlFetecher()
-  playerInfoUrls := playerInfoUrlFetcher("http://xxlgamers.gameme.com/overview/17")
+  playerInfoUrls := playerInfoUrlFetcher("http://xxlgamers.gameme.com/overview/9")
+  /* playerInfoIdChannel := make(chan string) */
+  /* go sendPlayerInfoUrls(playerInfoUrls, playerInfoIdChannel) */
+  //steamIdChannel := make(chan string)
   fmt.Printf("%v", playerInfoUrls)
 }
