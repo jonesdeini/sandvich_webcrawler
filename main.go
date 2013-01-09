@@ -5,8 +5,13 @@ import (
  "io/ioutil"
  "net/http"
  "regexp"
- "time"
 )
+
+func errorHandler(err error) {
+  if err != nil {
+    fmt.Println(err)
+  }
+}
 
 func playerInfoUrlFetcher(serverUrl string) []string {
   playerInfoUrlsRegex, _ := regexp.Compile(`http://xxlgamers.gameme.com/playerinfo/\d+`)
@@ -44,12 +49,10 @@ func uniq(s []string) []string {
 
 func urlFetcher(url string) string {
   resp, err := http.Get(url)
-  if err != nil {
-    fmt.Println(err)
-  }
+  errorHandler(err)
   defer resp.Body.Close()
   body, err := ioutil.ReadAll(resp.Body)
-  // if err yada yada???
+  errorHandler(err)
   return string(body)
 }
 
@@ -75,9 +78,8 @@ func main() {
   steamIdChannel := make(chan string)
   for i := range playerInfoUrls {
     go sendPlayerInfoUrls(playerInfoUrls, playerInfoIdChannel)
-    go recievePlayerInfoUrl(playerInfoIdChannel, steamIdChannel)
+    recievePlayerInfoUrl(playerInfoIdChannel, steamIdChannel)
     fmt.Println("loop number: ", i)
-    time.Sleep(1 * 1e9)
   }
   fmt.Printf("%v", playerInfoUrls)
 }
