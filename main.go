@@ -5,6 +5,7 @@ import (
  "io/ioutil"
  "net/http"
  "regexp"
+ "time"
 )
 
 func playerInfoUrlFetcher(serverUrl string) []string {
@@ -59,15 +60,24 @@ func sendPlayerInfoUrls(playerInfoUrls []string, cs chan string) {
   }
 }
 
-func recievePlayerInfoUrl(cs chan string) {
-
+func recievePlayerInfoUrl(playerInfoIdChannel chan string, steamIdChannel chan string) {
+  playerInfoUrl := <-playerInfoIdChannel
+  playerInfoPage := urlFetcher(playerInfoUrl)
+  steamIdRegexp, _ := regexp.Compile(`http://steamcommunity.com/profiles/\d+`)
+  res := steamIdRegexp.FindAllString(playerInfoPage, -1)
+  fmt.Printf("%v", uniq(res))
 }
 
 func main() {
   //severUrls := serverUrlFetecher()
   playerInfoUrls := playerInfoUrlFetcher("http://xxlgamers.gameme.com/overview/18")
-  /* playerInfoIdChannel := make(chan string) */
-  /* go sendPlayerInfoUrls(playerInfoUrls, playerInfoIdChannel) */
-  //steamIdChannel := make(chan string)
+  playerInfoIdChannel := make(chan string)
+  steamIdChannel := make(chan string)
+  for i := range playerInfoUrls {
+    go sendPlayerInfoUrls(playerInfoUrls, playerInfoIdChannel)
+    go recievePlayerInfoUrl(playerInfoIdChannel, steamIdChannel)
+    fmt.Println("loop number: ", i)
+    time.Sleep(1 * 1e9)
+  }
   fmt.Printf("%v", playerInfoUrls)
 }
