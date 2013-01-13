@@ -9,11 +9,13 @@ import (
 )
 
 func crawler(url string) string {
-  regex, _ := regexDeterminer(url)
+  regex, err := regexDeterminer(url)
+  errorHandler(err)
   if regex != nil {
     res := regex.FindAllString(urlFetcher(url), -1)
     urls := uniq(res)
     for i := range urls {
+      fmt.Println(urls[i])
       crawler(urls[i])
     }
   }
@@ -22,9 +24,9 @@ func crawler(url string) string {
 
 func regexDeterminer(url string) (*regexp.Regexp, error) {
   if strings.Contains(url, "tf") {
-    return regexp.Compile(`.gameme.com/overview/\d+`)
+    return regexp.Compile(`http://\w+.gameme.com/overview/\d+`)
   } else if strings.Contains(url, "overview") {
-    return regexp.Compile(`gameme.com/playerinfo/\d+`)
+    return regexp.Compile(`http://\w+.gameme.com/playerinfo/\d+`)
   } else if strings.Contains(url, "playerinfo") {
     return regexp.Compile(`http://steamcommunity.com/profiles/\d+`)
   }
@@ -58,9 +60,9 @@ func uniq(s []string) []string {
 func urlFetcher(url string) string {
   resp, err := http.Get(url)
   errorHandler(err)
+  defer resp.Body.Close()
   body, err := ioutil.ReadAll(resp.Body)
   errorHandler(err)
-  resp.Body.Close()
   return string(body)
 }
 
@@ -69,6 +71,7 @@ func main() {
 
   for i := range clans {
     clanUrl := "http://" + clans[i] + ".gameme.com/tf"
+    fmt.Println(clanUrl)
     fmt.Println(crawler(clanUrl))
   }
 }
