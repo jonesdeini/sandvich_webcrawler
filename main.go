@@ -9,17 +9,23 @@ import (
 )
 
 func crawler(url string) string {
+  fmt.Println(url)
   regex, err := regexDeterminer(url)
   errorHandler(err)
   if regex != nil {
     res := regex.FindAllString(urlFetcher(url), -1)
     urls := uniq(res)
     for i := range urls {
-      fmt.Println(urls[i])
       crawler(urls[i])
     }
   }
   return url
+}
+
+func errorHandler(err error) {
+  if err != nil {
+    fmt.Println(err)
+  }
 }
 
 func regexDeterminer(url string) (*regexp.Regexp, error) {
@@ -31,12 +37,6 @@ func regexDeterminer(url string) (*regexp.Regexp, error) {
     return regexp.Compile(`http://steamcommunity.com/profiles/\d+`)
   }
   return nil, nil
-}
-
-func errorHandler(err error) {
-  if err != nil {
-    fmt.Println(err)
-  }
 }
 
 func uniq(s []string) []string {
@@ -71,7 +71,6 @@ func main() {
 
   for i := range clans {
     clanUrl := "http://" + clans[i] + ".gameme.com/tf"
-    fmt.Println(clanUrl)
-    fmt.Println(crawler(clanUrl))
+    fmt.Println("finished!: " + crawler(clanUrl))
   }
 }
