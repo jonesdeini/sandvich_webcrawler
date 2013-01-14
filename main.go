@@ -1,6 +1,7 @@
 package main
 
 import (
+ "time"
  "fmt"
  "io/ioutil"
  "net/http"
@@ -8,7 +9,7 @@ import (
  "strings"
 )
 
-func crawler(url string) string {
+func crawler(url string, c chan string) {
   fmt.Println(url)
   regex, err := regexDeterminer(url)
   errorHandler(err)
@@ -16,10 +17,10 @@ func crawler(url string) string {
     res := regex.FindAllString(urlFetcher(url), -1)
     urls := uniq(res)
     for i := range urls {
-      crawler(urls[i])
+      go crawler(urls[i], c)
     }
   }
-  return url
+  c <- url
 }
 
 func errorHandler(err error) {
@@ -68,9 +69,18 @@ func urlFetcher(url string) string {
 
 func main() {
   clans := []string {"xxlgamers", "db"}
-
+  myCh := make(chan string)
   for i := range clans {
     clanUrl := "http://" + clans[i] + ".gameme.com/tf"
-    fmt.Println("finished!: " + crawler(clanUrl))
+    go crawler(clanUrl,myCh)
+    //fmt.Println("finished!: " + crawler(clanUrl))
+  }
+  for {
+    select {
+    case out := <- myCh:
+      fmt.Println("finished: " + out)
+    case <- time.After(3 * 1e9):
+      return
+    }
   }
 }
