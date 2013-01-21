@@ -9,8 +9,15 @@ import (
  "strings"
 )
 
+func backpackRetriever(steamUrl string) {
+  regex, err := regexp.Compile(`\d+`)
+  errorHandler(err)
+  res := regex.FindString(steamUrl)
+  fmt.Println(res)
+}
+
 func crawler(url string, c chan string) {
-  fmt.Println(url)
+  /* fmt.Println(url) */
   regex, err := regexDeterminer(url)
   errorHandler(err)
   if regex != nil {
@@ -19,6 +26,8 @@ func crawler(url string, c chan string) {
     for i := range urls {
       go crawler(urls[i], c)
     }
+  } else {
+    backpackRetriever(url)
   }
   c <- url
 }
@@ -79,7 +88,7 @@ func main() {
     select {
     case out := <- myCh:
       fmt.Println("finished: " + out)
-    case <- time.After(3 * 1e9):
+    case <- time.After(7 * 1e9):
       return
     }
   }
