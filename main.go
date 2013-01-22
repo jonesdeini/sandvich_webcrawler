@@ -3,6 +3,7 @@ package main
 import (
  "time"
  "fmt"
+ /* "encoding/json" */
  "regexp"
  "strings"
 )
@@ -15,8 +16,14 @@ func backpackRetriever(steamUrl string) {
   steamId := regex.FindString(steamUrl)
   apiCall := "http://api.steampowered.com/IEconItems_440/GetPlayerItems/v0001/?key=" + apiKey()
   apiCall = apiCall + "&steamid=" + steamId
-  res := urlFetcher(apiCall)
-  fmt.Println(res)
+  backpack := urlFetcher(apiCall)
+  // Too lazy to map all the attributes returned by steam api
+  // maybe(hopefully) someone else has already mapped them?
+  /* var m Message */
+  /* err := json.Unmarshal(backpack, &m) */
+  /* errorHandler(err) */
+  /* fmt.Println(m) */
+  fmt.Println(backpack)
 }
 
 func crawler(url string, c chan string) {
@@ -34,7 +41,6 @@ func crawler(url string, c chan string) {
   }
   c <- url
 }
-
 
 func regexDeterminer(url string) (*regexp.Regexp, error) {
   if strings.Contains(url, "tf") {
