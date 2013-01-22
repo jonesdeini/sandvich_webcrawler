@@ -3,16 +3,19 @@ package main
 import (
  "time"
  "fmt"
- "io/ioutil"
- "net/http"
  "regexp"
  "strings"
 )
 
 func backpackRetriever(steamUrl string) {
+  // I tried to avoid this extra regexp. Idealy just the steam id would be passed into this function.
+  // Due to the use of FindAllString() in crawler we're stuck with entire steam profile url
   regex, err := regexp.Compile(`\d+`)
   errorHandler(err)
-  res := regex.FindString(steamUrl)
+  steamId := regex.FindString(steamUrl)
+  apiCall := "http://api.steampowered.com/IEconItems_440/GetPlayerItems/v0001/?key=" + apiKey()
+  apiCall = apiCall + "&steamid=" + steamId
+  res := urlFetcher(apiCall)
   fmt.Println(res)
 }
 
@@ -32,11 +35,6 @@ func crawler(url string, c chan string) {
   c <- url
 }
 
-func errorHandler(err error) {
-  if err != nil {
-    fmt.Println(err)
-  }
-}
 
 func regexDeterminer(url string) (*regexp.Regexp, error) {
   if strings.Contains(url, "tf") {
@@ -49,32 +47,7 @@ func regexDeterminer(url string) (*regexp.Regexp, error) {
   return nil, nil
 }
 
-func uniq(s []string) []string {
-  var seen bool
-  uniqSlice := []string{}
 
-  for i := range s {
-    seen = false
-    for j := range uniqSlice {
-      if s[i] == uniqSlice[j] {
-        seen = true
-      }
-    }
-    if seen == false {
-      uniqSlice = append(uniqSlice, s[i])
-    }
-  }
-  return uniqSlice
-}
-
-func urlFetcher(url string) string {
-  resp, err := http.Get(url)
-  errorHandler(err)
-  defer resp.Body.Close()
-  body, err := ioutil.ReadAll(resp.Body)
-  errorHandler(err)
-  return string(body)
-}
 
 func main() {
   clans := []string {"xxlgamers", "db"}

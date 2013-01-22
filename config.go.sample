@@ -1,0 +1,5 @@
+package main
+
+func apiKey() string {
+  return "INSERT API KEY HERE"
+}
