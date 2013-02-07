@@ -25,7 +25,6 @@ type ItemsType struct {
 }
 
 type AttributesType struct {
-  BackpackSlots int
   FloatValue float32 `json:"float_value"`
 }
 
@@ -41,7 +40,7 @@ func backpackRetriever(steamUrl string) {
   var jsonType jsonObject
   err = json.Unmarshal(backpack, &jsonType)
   errorHandler(err)
-  fmt.Printf("Results: %v\n", jsonType)
+  fmt.Printf("Results: %+v\n", jsonType)
 }
 
 func crawler(url string, c chan string) {
