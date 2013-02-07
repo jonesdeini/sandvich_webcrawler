@@ -7,10 +7,23 @@ import (
   "net/http"
 )
 
+func apiFetcher(url string) []byte {
+  return fetcher(url)
+}
+
 func errorHandler(err error) {
   if err != nil {
     fmt.Println(err)
   }
+}
+
+func fetcher(url string) []byte {
+  resp, err := http.Get(url)
+  errorHandler(err)
+  defer resp.Body.Close()
+  body, err := ioutil.ReadAll(resp.Body)
+  errorHandler(err)
+  return body
 }
 
 func uniq(s []string) []string {
@@ -32,10 +45,5 @@ func uniq(s []string) []string {
 }
 
 func urlFetcher(url string) string {
-  resp, err := http.Get(url)
-  errorHandler(err)
-  defer resp.Body.Close()
-  body, err := ioutil.ReadAll(resp.Body)
-  errorHandler(err)
-  return string(body)
+  return string(fetcher(url))
 }

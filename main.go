@@ -1,12 +1,33 @@
 package main
 
 import (
- "time"
- "fmt"
- /* "encoding/json" */
- "regexp"
- "strings"
+  "time"
+  "fmt"
+  "encoding/json"
+  "regexp"
+  "strings"
 )
+
+type jsonObject struct {
+  Result ResultType
+}
+
+type ResultType struct {
+  Status        int
+  BackpackSlots int `json:"num_backpack_slots"`
+  Items         []ItemsType
+}
+
+type ItemsType struct {
+  Defindex    int
+  Quality     int
+  Attributes  []AttributesType
+}
+
+type AttributesType struct {
+  BackpackSlots int
+  FloatValue float32 `json:"float_value"`
+}
 
 func backpackRetriever(steamUrl string) {
   // I tried to avoid this extra regexp. Idealy just the steam id would be passed into this function.
@@ -16,14 +37,11 @@ func backpackRetriever(steamUrl string) {
   steamId := regex.FindString(steamUrl)
   apiCall := "http://api.steampowered.com/IEconItems_440/GetPlayerItems/v0001/?key=" + apiKey()
   apiCall = apiCall + "&steamid=" + steamId
-  backpack := urlFetcher(apiCall)
-  // Too lazy to map all the attributes returned by steam api
-  // maybe(hopefully) someone else has already mapped them?
-  /* var m Message */
-  /* err := json.Unmarshal(backpack, &m) */
-  /* errorHandler(err) */
-  /* fmt.Println(m) */
-  fmt.Println(backpack)
+  backpack := apiFetcher(apiCall)
+  var jsonType jsonObject
+  err = json.Unmarshal(backpack, &jsonType)
+  errorHandler(err)
+  fmt.Printf("Results: %v\n", jsonType)
 }
 
 func crawler(url string, c chan string) {
