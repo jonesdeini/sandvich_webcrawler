@@ -1,0 +1,3 @@
+#!/bin/bash
+
+go run config.go dbConnection.go main.go utils.go
