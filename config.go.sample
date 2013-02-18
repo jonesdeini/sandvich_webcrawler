@@ -1,5 +1,21 @@
 package main
 
 func apiKey() string {
-  return "INSERT API KEY HERE"
+  return "implement me bro!"
+}
+
+func dbName() string {
+  return "implement me bro!"
+}
+
+func dbPass() string {
+  return "implement me bro!"
+}
+
+func dbSSLMode() string {
+  return "implement me bro!"
+}
+
+func dbUser() string {
+  return "implement me bro!"
 }
