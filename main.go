@@ -20,6 +20,7 @@ type ResultType struct {
 
 type ItemsType struct {
   Defindex    int
+  Level       int
   Quality     int
   Attributes  []AttributesType
 }
